@@ -28,28 +28,36 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Build executable
+      - name: Set output file name
         run: |
-          if [[ "$RUNNER_OS" == "macOS" ]]; then
-            pyinstaller --onefile --windowed --add-data "icon.png:." --icon=icon.icns --name=MagickPrototype prototype.py
-            if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
-              echo "file_name=MagickPrototype-macos-arm.zip" >> $GITHUB_ENV
-            else
-              echo "file_name=MagickPrototype-macos-intel.zip" >> $GITHUB_ENV
-            fi
+          if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            echo "file_name=MagickPrototype-macos-arm.zip" >> $GITHUB_ENV
+          elif [[ "${{ matrix.os }}" == "macos-12" ]]; then
+            echo "file_name=MagickPrototype-macos-intel.zip" >> $GITHUB_ENV
           else
-            pyinstaller --onefile --windowed --add-data "icon.png;." --icon=icon.ico --name=MagickPrototype prototype.py
             echo "file_name=MagickPrototype-windows.zip" >> $GITHUB_ENV
           fi
-        shell: bash
 
-      - name: Zip contents of dist folder
+      - name: Build executable (Windows)
+        if: runner.os == 'Windows'
         run: |
-          if [[ "$RUNNER_OS" == "Windows" ]]; then
-            powershell Compress-Archive -Path dist\* -DestinationPath ${{ env.file_name }}
-          else
-            zip -r ${{ env.file_name }} dist/
-          fi
+          pyinstaller --onefile --windowed --add-data "icon.png;." --icon=icon.ico --name=MagickPrototype prototype.py
+
+      - name: Build executable (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          pyinstaller --onefile --windowed --add-data "icon.png:." --icon=icon.icns --name=MagickPrototype prototype.py
+
+      - name: Zip dist (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          Compress-Archive -Path dist\* -DestinationPath ${{ env.file_name }}
+        shell: pwsh
+
+      - name: Zip dist (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          zip -r ${{ env.file_name }} dist/
 
       - name: Upload executable
         uses: actions/upload-artifact@v4
