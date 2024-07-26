@@ -8,8 +8,8 @@
 
 ### Windows
 
-```pyinstaller --onefile --windowed --add-data "icon.ico;." --add-data "images;images" prototype.py```
+```pyinstaller --onefile --windowed --add-data "icon.ico;." --icon=icon.ico --name=MagickPrototype  prototype.py```
 
 ### MacOS
 
-```pyinstaller --onefile --windowed --add-data "icon.ico:." --add-data "images:images" prototype.py```
+```pyinstaller --onefile --windowed --add-data "icon.ico:." --icon=icon.ico --name=MagickPrototype  prototype.py```

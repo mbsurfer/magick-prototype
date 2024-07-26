@@ -14,6 +14,7 @@ import threading
 import queue
 from dataclasses import dataclass
 import traceback
+import subprocess
 
 
 def resource_path(relative_path):
@@ -32,6 +33,13 @@ def format_size(size):
         if size < 1024:
             return f"{size:.0f} {unit}"
         size /= 1024
+
+
+def open_file(file_path):
+    if sys.platform == "win32":
+        os.startfile(file_path)
+    elif sys.platform == "darwin":
+        subprocess.call(['open', file_path])
 
 
 def show_error(e):
@@ -581,9 +589,9 @@ class App(ttk.Window):
 
     def open_pdf(self):
         if self.pdf_singles_save_path:
-            os.startfile(self.pdf_singles_save_path)
+            open_file(self.pdf_singles_save_path)
         if self.pdf_grid_save_path:
-            os.startfile(self.pdf_grid_save_path)
+            open_file(self.pdf_singles_save_path)
 
 
 if __name__ == "__main__":
