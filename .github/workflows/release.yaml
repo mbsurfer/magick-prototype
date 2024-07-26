@@ -32,9 +32,9 @@ jobs:
       - name: Build executable
         run: |
           if [[ "$RUNNER_OS" == "macOS" ]]; then
-            pyinstaller --onefile --windowed --add-data "icon.png:." --icon=icon.icns --name=MagickPrototype prototype.py
+            pyinstaller --onefile --windowed --add-data="icon.png:." --icon=icon.icns --name=MagickPrototype prototype.py
           else
-            pyinstaller --onefile --windowed --add-data "icon.png;." --icon=icon.ico --name=MagickPrototype prototype.py
+            pyinstaller --onefile --windowed --add-data="icon.png;." --icon=icon.ico --name=MagickPrototype prototype.py
           fi
         shell: bash
 
