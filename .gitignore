@@ -1,0 +1,7 @@
+venv/
+.idea/
+__pycache__/
+error_log.txt
+*.spec
+build/
+dist/
