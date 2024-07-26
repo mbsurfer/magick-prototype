@@ -226,8 +226,8 @@ class App(ttk.Window):
         self.page_title_padding = 100
         self.page_footer_padding = 70
         self.panel_padding = 50
-        self.panels_per_row = 3
-        self.panels_per_column = 3
+        self.panel_rows = 3
+        self.panel_columns = 3
 
         self.panel_page_map: dict[int, list[Panel]] = {}
 
@@ -383,13 +383,13 @@ class App(ttk.Window):
                 c_singles.showPage()
 
                 grid_page_width = (
-                        (grid_panel_img.width * self.panels_per_column) +
-                        (self.panel_padding * (self.panels_per_column - 1)) +
+                        (grid_panel_img.width * self.panel_columns) +
+                        (self.panel_padding * (self.panel_columns - 1)) +
                         (self.page_padding * 2)
                 )
                 grid_page_height = (
-                        (grid_panel_img.height * self.panels_per_row) +
-                        (self.panel_padding * (self.panels_per_row - 1)) +
+                        (grid_panel_img.height * self.panel_rows) +
+                        (self.panel_padding * (self.panel_rows - 1)) +
                         (self.page_padding * 2) +
                         self.page_title_padding +
                         self.page_footer_padding
@@ -399,13 +399,13 @@ class App(ttk.Window):
                     c_grid.setFillColorRGB(*background_color)
                     c_grid.rect(0, 0, grid_page_width, grid_page_height, fill=1)
 
-                if grid_row < self.panels_per_row:
+                if grid_row < self.panel_rows:
                     x_offset, y_offset = self.calculate_xy_offsets(grid_panel_img, grid_row, grid_column,
                                                                    grid_page_height)
                     c_grid.drawImage(f"{grid_panel_img_path}", x=x_offset, y=y_offset)
                     self.add_panel_to_page(panel, grid_page)
 
-                    if grid_column < (self.panels_per_column - 1):
+                    if grid_column < (self.panel_columns - 1):
                         grid_column += 1
                     else:
                         grid_row += 1
