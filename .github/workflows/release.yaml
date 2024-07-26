@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*.*.*'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -31,16 +32,26 @@ jobs:
         run: |
           if [[ "$RUNNER_OS" == "macOS" ]]; then
             pyinstaller --onefile --windowed --add-data "icon.png:." --icon=icon.icns --name=MagickPrototype prototype.py
+            if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+              echo "file_name=MagickPrototype-macos-arm.zip" >> $GITHUB_ENV
+            else
+              echo "file_name=MagickPrototype-macos-intel.zip" >> $GITHUB_ENV
+            fi
           else
             pyinstaller --onefile --windowed --add-data "icon.png;." --icon=icon.ico --name=MagickPrototype prototype.py
+            echo "file_name=MagickPrototype-windows.zip" >> $GITHUB_ENV
           fi
         shell: bash
+
+      - name: Zip contents of dist folder
+        run: |
+          zip -r ${{ env.file_name }} dist/
 
       - name: Upload executable
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.os }}-executable
-          path: dist/
+          name: ${{ env.file_name }}
+          path: ${{ env.file_name }}
 
   release:
     needs: build
@@ -60,4 +71,4 @@ jobs:
       - name: Create release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "*-executable"
+          artifacts: "MagickPrototype-*.zip"
