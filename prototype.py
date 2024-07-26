@@ -18,7 +18,7 @@ import subprocess
 
 
 def resource_path(relative_path):
-    """ Get the absolute path to the resource, works for dev and PyInstaller """
+    """ Get absolute path to resource, works for dev and for PyInstaller """
     try:
         # PyInstaller creates a temp folder and stores path in _MEIPASS
         base_path = sys._MEIPASS
@@ -591,7 +591,7 @@ class App(ttk.Window):
         if self.pdf_singles_save_path:
             open_file(self.pdf_singles_save_path)
         if self.pdf_grid_save_path:
-            open_file(self.pdf_singles_save_path)
+            open_file(self.pdf_grid_save_path)
 
 
 if __name__ == "__main__":
