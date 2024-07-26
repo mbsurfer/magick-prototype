@@ -2,6 +2,8 @@ name: Build nad Release
 
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v*.*.*'
 
@@ -33,6 +35,7 @@ jobs:
             pyinstaller --onefile --windowed --add-data "icon.png:." --icon=icon.icns --name=MagickPrototype prototype.py
           else
             pyinstaller --onefile --windowed --add-data "icon.png;." --icon=icon.ico --name=MagickPrototype prototype.py
+          fi
         shell: bash
 
       - name: Upload executable
