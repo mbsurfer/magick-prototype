@@ -37,6 +37,7 @@ jobs:
           else
             echo "file_name=MagickPrototype-windows.zip" >> $GITHUB_ENV
           fi
+        shell: bash
 
       - name: Build executable (Windows)
         if: runner.os == 'Windows'
