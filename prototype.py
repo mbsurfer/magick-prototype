@@ -133,7 +133,7 @@ class App(ttk.Window):
         self.check_queue()
 
         self.title("Magick Prototype")
-        self.set_icon('icon')
+        self.set_icon()
         self.geometry("1200x800")
 
         # Buttons
@@ -231,13 +231,14 @@ class App(ttk.Window):
 
         self.panel_page_map: dict[int, list[Panel]] = {}
 
-    def set_icon(self, icon_name):
+    def set_icon(self):
         # if macOS use icns, if windows use ico
-        if sys.platform == "darwin":
-            icon = f"{icon_name}.icns"
-        else:
-            icon = f"{icon_name}.ico"
-        self.iconbitmap(resource_path(icon))
+        # if sys.platform == "darwin":
+        #     icon = f"{icon_name}.icns"
+        # else:
+        #     icon = f"{icon_name}.ico"
+        # self.iconbitmap(resource_path(icon))
+        self.iconphoto(False, tk.PhotoImage(file=resource_path("icon.png")))
 
     def on_theme_selected(self, event):
         selected_theme = self.select_theme.get()
