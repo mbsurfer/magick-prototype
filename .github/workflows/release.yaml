@@ -1,4 +1,4 @@
-name: Build nad Release
+name: Build and Release
 
 on:
   push:
@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ macos-latest, macos-11, windows-latest ]
+        os: [ macos-latest, macos-12, windows-latest ]
 
     steps:
       - name: Checkout code
