@@ -133,7 +133,7 @@ class App(ttk.Window):
         self.check_queue()
 
         self.title("Magick Prototype")
-        self.iconbitmap(resource_path('icon.ico'))
+        self.set_icon('icon')
         self.geometry("1200x800")
 
         # Buttons
@@ -231,6 +231,14 @@ class App(ttk.Window):
 
         self.panel_page_map: dict[int, list[Panel]] = {}
 
+    def set_icon(self, icon_name):
+        # if macOS use icns, if windows use ico
+        if sys.platform == "darwin":
+            icon = f"{icon_name}.icns"
+        else:
+            icon = f"{icon_name}.ico"
+        self.iconbitmap(resource_path(icon))
+
     def on_theme_selected(self, event):
         selected_theme = self.select_theme.get()
         self.font_color = THEMES[selected_theme].font_color
@@ -303,7 +311,7 @@ class App(ttk.Window):
         self.pdf_button.config(state=DISABLED)
         self.stop_pdf_button.config(state=DISABLED)
         self.open_pdf_button.config(state=DISABLED)
-        self.reset_theme()
+        # self.reset_theme()
         self.reset_progress()
         self.entry_name.delete(0, 'end')
         for i in self.tv.get_children():
@@ -348,9 +356,9 @@ class App(ttk.Window):
                 return
 
             pdf_file_name = self.entry_name.get()
-
-            self.pdf_singles_save_path = f"{self.my_dir}/{pdf_file_name}.pdf"
-            self.pdf_grid_save_path = f"{self.my_dir}/{pdf_file_name}_grid.pdf"
+            target_dir = os.path.dirname(self.my_dir)
+            self.pdf_singles_save_path = f"{target_dir}/{pdf_file_name}.pdf"
+            self.pdf_grid_save_path = f"{target_dir}/{pdf_file_name}_grid.pdf"
 
             background_color = tuple(value / 255 for value in self.background_color)
 
@@ -578,7 +586,7 @@ class App(ttk.Window):
             new_image.paste(text_image, (footer_text_x, footer_text_y))
 
         # create panel dir if not exists
-        panel_dir = f"{self.my_dir}/panels/{style}"
+        panel_dir = f"{os.path.dirname(self.my_dir)}/panels/{style}"
         if not os.path.exists(panel_dir):
             os.makedirs(panel_dir, exist_ok=True)
 
