@@ -57,10 +57,10 @@ jobs:
       #          Compress-Archive -Path dist\MagickPrototype.exe -DestinationPath ${{ env.file_name }}
       #        shell: pwsh
       #
-      - name: Zip dist (macOS)
-        if: runner.os == 'macOS'
-        run: |
-          ditto -c -k --sequesterRsrc --keepParent dist/MagickPrototype.app ${{ env.file_name }}.zip
+      #      - name: Zip dist (macOS)
+      #        if: runner.os == 'macOS'
+      #        run: |
+      #          ditto -c -k --sequesterRsrc --keepParent dist/MagickPrototype.app ${{ env.file_name }}.zip
 
       - name: Display file structure for review
         run: ls -R
@@ -69,7 +69,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.file_name }}
-          path: ${{ env.exe_path }}
+          path: "/dist"
 
   release:
     needs: build
@@ -82,6 +82,8 @@ jobs:
 
       - name: Download All Artifacts
         uses: actions/download-artifact@v4
+        with:
+          merge-multiple: "true"
 
       - name: Display structure of downloaded files
         run: ls -R
@@ -89,4 +91,4 @@ jobs:
       - name: Create release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "MagickPrototype.exe, MagickPrototype-macos-*, MagickPrototype-windows*, MagickPrototype-windows"
+          artifacts: "MagickPrototype*"
