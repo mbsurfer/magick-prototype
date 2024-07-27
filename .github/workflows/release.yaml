@@ -87,4 +87,4 @@ jobs:
       - name: Create release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "MagickPrototype-windows.zip,MagickPrototype-macos-arm.zip,MagickPrototype-macos-intel.zip"
+          artifacts: "MagickPrototype-*"
