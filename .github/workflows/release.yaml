@@ -49,25 +49,25 @@ jobs:
         run: |
           pyinstaller --onefile --windowed --add-data "icon.png:." --icon=icon.icns --name=MagickPrototype prototype.py
 
-      #      - name: Zip dist (Windows)
-      #        if: runner.os == 'Windows'
-      #        run: |
-      #          Compress-Archive -Path dist\* -DestinationPath ${{ env.file_name }}
-      #        shell: pwsh
-      #
-      #      - name: Zip dist (macOS)
-      #        if: runner.os == 'macOS'
-      #        run: |
-      #          zip -r ${{ env.file_name }} dist/
+      - name: Zip dist (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          Compress-Archive -Path dist\MagickPrototype.exe -DestinationPath ${{ env.file_name }}
+        shell: pwsh
+
+      - name: Zip dist (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          zip -r ${{ env.file_name }} dist\MagickPrototype.app
 
       - name: Display file structure for review
         run: ls -R
 
-      - name: Upload executable
+      - name: Upload Windows executable
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.file_name }}
-          path: dist/
+          name: ${{ env.file_name }}.zip
+          path: ${{ env.file_name }}.zip
 
   release:
     needs: build
@@ -87,4 +87,4 @@ jobs:
       - name: Create release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "MagickPrototype-*"
+          artifacts: "MagickPrototype*.zip"
