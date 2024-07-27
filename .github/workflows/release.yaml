@@ -58,7 +58,7 @@ jobs:
       - name: Zip dist (macOS)
         if: runner.os == 'macOS'
         run: |
-          zip -r ${{ env.file_name }} dist\MagickPrototype.app
+          zip -r ${{ env.file_name }} dist/MagickPrototype.app
 
       - name: Display file structure for review
         run: ls -R
