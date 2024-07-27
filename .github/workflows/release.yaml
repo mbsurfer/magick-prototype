@@ -31,11 +31,11 @@ jobs:
       - name: Set output file name
         run: |
           if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
-            echo "file_name=MagickPrototype-macos-arm.zip" >> $GITHUB_ENV
+            echo "file_name=MagickPrototype-macos-arm" >> $GITHUB_ENV
           elif [[ "${{ matrix.os }}" == "macos-12" ]]; then
-            echo "file_name=MagickPrototype-macos-intel.zip" >> $GITHUB_ENV
+            echo "file_name=MagickPrototype-macos-intel" >> $GITHUB_ENV
           else
-            echo "file_name=MagickPrototype-windows.zip" >> $GITHUB_ENV
+            echo "file_name=MagickPrototype-windows" >> $GITHUB_ENV
           fi
         shell: bash
 
@@ -66,8 +66,8 @@ jobs:
       - name: Upload executable
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.file_name }}
-          path: ${{ env.file_name }}
+          name: ${{ env.file_name }}.zip
+          path: ${{ env.file_name }}.zip
 
   release:
     needs: build
