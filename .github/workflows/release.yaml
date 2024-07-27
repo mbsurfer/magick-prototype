@@ -28,7 +28,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Set output file name
+      - name: Define output file name
         run: |
           if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
             echo "file_name=MagickPrototype-macos-arm" >> $GITHUB_ENV
@@ -36,6 +36,14 @@ jobs:
             echo "file_name=MagickPrototype-macos-intel" >> $GITHUB_ENV
           else
             echo "file_name=MagickPrototype-windows" >> $GITHUB_ENV
+          fi
+        shell: bash
+
+      - name: Define executable paths
+        run: |
+          if [[ "${{ runner.os }}" == "macOS" ]]; then
+            echo "exe_path=dist/MagickPrototype.app" >> $GITHUB_ENV
+          else
             echo "exe_path=dist\MagickPrototype.exe" >> $GITHUB_ENV
           fi
         shell: bash
@@ -49,18 +57,17 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           pyinstaller --onefile --windowed --add-data "icon.png:." --icon=icon.icns --name=MagickPrototype prototype.py
-          echo "exe_path=${{ env.file_name }}.zip" >> $GITHUB_ENV
 
-      #      - name: Zip dist (Windows)
-      #        if: runner.os == 'Windows'
-      #        run: |
-      #          Compress-Archive -Path dist\MagickPrototype.exe -DestinationPath ${{ env.file_name }}
-      #        shell: pwsh
-      #
-      #      - name: Zip dist (macOS)
-      #        if: runner.os == 'macOS'
-      #        run: |
-      #          ditto -c -k --sequesterRsrc --keepParent dist/MagickPrototype.app ${{ env.file_name }}.zip
+      - name: Zip dist (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          Compress-Archive -Path dist\MagickPrototype.exe -DestinationPath ${{ env.file_name }}.zip
+        shell: pwsh
+
+      - name: Zip dist (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          ditto -c -k --sequesterRsrc --keepParent dist/MagickPrototype.app ${{ env.file_name }}.zip
 
       - name: Display file structure for review
         run: ls -R
@@ -68,8 +75,8 @@ jobs:
       - name: Upload executable
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.file_name }}
-          path: dist/
+          name: ${{ env.file_name }}.zip
+          path: ${{ env.file_name }}.zip
 
   release:
     needs: build
@@ -91,4 +98,4 @@ jobs:
       - name: Create release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "MagickPrototype*"
+          artifacts: "MagickPrototype-*.zip"
