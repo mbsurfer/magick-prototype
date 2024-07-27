@@ -36,6 +36,7 @@ jobs:
             echo "file_name=MagickPrototype-macos-intel" >> $GITHUB_ENV
           else
             echo "file_name=MagickPrototype-windows" >> $GITHUB_ENV
+            echo "exe_path=dist\MagickPrototype.exe" >> $GITHUB_ENV
           fi
         shell: bash
 
@@ -43,13 +44,12 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           pyinstaller --onefile --windowed --add-data "icon.png;." --icon=icon.ico --name=MagickPrototype prototype.py
-          echo "exe_path=dist\MagickPrototype.exe" >> $GITHUB_ENV
 
       - name: Build executable (macOS)
         if: runner.os == 'macOS'
         run: |
           pyinstaller --onefile --windowed --add-data "icon.png:." --icon=icon.icns --name=MagickPrototype prototype.py
-          echo "exe_path=dist\MagickPrototype.app" >> $GITHUB_ENV
+          echo "exe_path=dist/MagickPrototype.app" >> $GITHUB_ENV
 
       #      - name: Zip dist (Windows)
       #        if: runner.os == 'Windows'
@@ -65,7 +65,7 @@ jobs:
       - name: Display file structure for review
         run: ls -R
 
-      - name: Upload Windows executable
+      - name: Upload executable
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.file_name }}
