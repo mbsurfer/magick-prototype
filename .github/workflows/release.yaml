@@ -43,22 +43,24 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           pyinstaller --onefile --windowed --add-data "icon.png;." --icon=icon.ico --name=MagickPrototype prototype.py
+          echo "exe_path=dist\MagickPrototype.exe" >> $GITHUB_ENV
 
       - name: Build executable (macOS)
         if: runner.os == 'macOS'
         run: |
           pyinstaller --onefile --windowed --add-data "icon.png:." --icon=icon.icns --name=MagickPrototype prototype.py
+          echo "exe_path=dist\MagickPrototype.app" >> $GITHUB_ENV
 
-      - name: Zip dist (Windows)
-        if: runner.os == 'Windows'
-        run: |
-          Compress-Archive -Path dist\MagickPrototype.exe -DestinationPath ${{ env.file_name }}
-        shell: pwsh
-
-      - name: Zip dist (macOS)
-        if: runner.os == 'macOS'
-        run: |
-          zip -r ${{ env.file_name }} dist/MagickPrototype.app
+      #      - name: Zip dist (Windows)
+      #        if: runner.os == 'Windows'
+      #        run: |
+      #          Compress-Archive -Path dist\MagickPrototype.exe -DestinationPath ${{ env.file_name }}
+      #        shell: pwsh
+      #
+      #      - name: Zip dist (macOS)
+      #        if: runner.os == 'macOS'
+      #        run: |
+      #          zip -r ${{ env.file_name }} dist/MagickPrototype.app
 
       - name: Display file structure for review
         run: ls -R
@@ -66,8 +68,8 @@ jobs:
       - name: Upload Windows executable
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.file_name }}.zip
-          path: ${{ env.file_name }}.zip
+          name: ${{ env.file_name }}
+          path: ${{ env.exe_path }}
 
   release:
     needs: build
