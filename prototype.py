@@ -51,6 +51,14 @@ def show_error(e):
     Messagebox.show_error(error_message, "Error")
 
 
+def get_version():
+    version_file = resource_path("version.txt")
+    if os.path.exists(version_file):
+        with open(version_file, "r") as file:
+            return file.read().strip()
+    return "Unknown"
+
+
 class Panel:
 
     def __init__(self, file_name: str):
@@ -215,6 +223,13 @@ class App(ttk.Window):
 
         self.progress_label = ttk.Label(self.progress_frame, text="0 / 0 Images Processed", style=LIGHT, anchor=W)
         self.progress_label.pack(fill=X, pady=(5, 0))
+
+        # Footer Frame
+        self.footer_frame = ttk.Frame(self)
+        self.footer_frame.pack(fill=X, side=BOTTOM)
+
+        self.version_label = ttk.Label(self.footer_frame, text=get_version(), style=LIGHT, anchor=E)
+        self.version_label.pack(fill=X, pady=20, padx=20)
 
         # GLOBAL SETTINGS
         default_theme = list(THEMES.keys())[0]
@@ -437,6 +452,8 @@ class App(ttk.Window):
                                                                    grid_page_height)
                     c_grid.drawImage(f"{grid_panel_img_path}", x=x_offset, y=y_offset)
                     self.add_panel_to_page(panel, grid_page)
+
+                    grid_column += 1
 
                 # if is last item, add the page number and title
                 if panel == list(self.image_files_map.keys())[-1]:
