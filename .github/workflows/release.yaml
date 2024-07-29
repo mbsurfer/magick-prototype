@@ -51,12 +51,12 @@ jobs:
       - name: Build executable (Windows)
         if: runner.os == 'Windows'
         run: |
-          pyinstaller --onefile --windowed --add-data "icon.png;." --icon=icon.ico --name=MagickPrototype prototype.py
+          pyinstaller --onefile --windowed --add-data "icon.png;." --add-data "version.txt;." --icon=icon.ico --name=MagickPrototype prototype.py
 
       - name: Build executable (macOS)
         if: runner.os == 'macOS'
         run: |
-          pyinstaller --onefile --windowed --add-data "icon.png:." --icon=icon.icns --name=MagickPrototype prototype.py
+          pyinstaller --onefile --windowed --add-data "icon.png:." --add-data "version.txt:." --icon=icon.icns --name=MagickPrototype prototype.py
 
       - name: Zip dist (Windows)
         if: runner.os == 'Windows'
