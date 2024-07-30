@@ -403,7 +403,7 @@ class App(ttk.Window):
                                               pagesize=[single_panel_img.width, single_panel_img.height])
 
                 c_singles.drawImage(f"{single_panel_img_path}", 0, 0)
-                self.add_filename(c_singles, pdf_file_name, offset=10, font_size=18)
+                self.add_filename(c_singles, pdf_file_name, offset=10, font_size=16)
                 c_singles.showPage()
 
                 grid_page_width = (
@@ -551,8 +551,8 @@ class App(ttk.Window):
         # todo: allow user to adjust these settings at runtime
         header_padding = 30 if add_header else 0
         footer_padding = 30 if add_footer else 0
-        header_font_size = 24
-        footer_font_size = 35
+        header_font_size = 24 if style == "grid" else 16
+        footer_font_size = 35 if style == "grid" else 16
         header_text_padding = 10 if add_header else 0
         footer_text_padding = 15 if add_footer else 0
 
