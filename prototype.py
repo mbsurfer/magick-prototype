@@ -276,7 +276,6 @@ class App(ttk.Window):
         self.update_color_preview()
 
     def update_color_preview(self):
-        print(self.font_color)
         self.font_color_preview_canvas.itemconfig(self.font_color_preview, fill=rgb_to_hex(self.font_color))
 
     def set_icon(self):
@@ -435,7 +434,7 @@ class App(ttk.Window):
                                               pagesize=[single_panel_img.width, single_panel_img.height])
 
                 c_singles.drawImage(f"{single_panel_img_path}", 0, 0)
-                self.add_filename(c_singles, pdf_file_name, offset=10, font_size=16)
+                self.add_filename(c_singles, pdf_file_name, offset=10, font_size=8)
                 c_singles.showPage()
 
                 grid_page_width = (
@@ -552,10 +551,10 @@ class App(ttk.Window):
     def add_page_number(self, c, page_number, page_width):
         font_color = tuple(value / 255 for value in self.font_color)
         c.setFillColorRGB(*font_color)
-        c.setFont("Helvetica", 32)
+        c.setFont("Helvetica", 18)
         c.drawString(page_width - 50, 50, str(page_number))
 
-    def add_filename(self, c, text, offset=50, font_size=32):
+    def add_filename(self, c, text, offset=50, font_size=18):
         if not self.include_filename_var.get():
             return
         font_color = tuple(value / 255 for value in self.font_color)
