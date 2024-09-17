@@ -5,6 +5,7 @@ import ttkbootstrap as ttk
 from tkinter.filedialog import askdirectory
 from ttkbootstrap.constants import *
 from ttkbootstrap.dialogs import Messagebox
+from ttkbootstrap.dialogs.colorchooser import ColorChooserDialog
 from ttkbootstrap.toast import ToastNotification
 from ttkbootstrap.icons import Icon, Emoji
 from reportlab.pdfgen import canvas
@@ -57,6 +58,10 @@ def get_version():
         with open(version_file, "r") as file:
             return file.read().strip()
     return "Unknown"
+
+
+def rgb_to_hex(rgb):
+    return '#{:02x}{:02x}{:02x}'.format(*rgb)
 
 
 class Panel:
@@ -128,7 +133,12 @@ THEMES = {
         "name": "Previs",
         "font_color": (254, 215, 0),
         "background_color": (0, 0, 0)
-    })
+    }),
+    "Black & Gray": Theme.from_dict({
+        "name": "Black & Gray",
+        "font_color": (128, 128, 128),
+        "background_color": (0, 0, 0)
+    }),
 }
 
 
@@ -185,6 +195,18 @@ class App(ttk.Window):
         self.entry_name = ttk.Entry(self.settings_frame, width=60)
         self.entry_name.grid(row=0, column=3, padx=(10, 20))
 
+        self.include_filename_var = tk.BooleanVar(value=True)
+        self.include_filename = ttk.Checkbutton(self.settings_frame, text="Include Filename", style=LIGHT,
+                                                variable=self.include_filename_var)
+        self.include_filename.grid(row=0, column=4, padx=(0, 20))
+
+        self.font_color_btn = ttk.Button(self.settings_frame, text="Set Font Color", style=SECONDARY, command=self.cc)
+        self.font_color_btn.grid(row=0, column=5, padx=(0, 20))
+
+        self.font_color_preview_canvas = tk.Canvas(self.settings_frame, width=20, height=20)
+        self.font_color_preview_canvas.grid(row=0, column=6, padx=(0, 20))
+        self.font_color_preview = self.font_color_preview_canvas.create_rectangle(0, 0, 20, 20, outline="black")
+
         self.my_dir = None
         self.image_files_map: dict[Panel, str] = {}
         self.pdf_singles_save_path = None
@@ -235,6 +257,7 @@ class App(ttk.Window):
         default_theme = list(THEMES.keys())[0]
         self.font_color = THEMES[default_theme].font_color
         self.background_color = THEMES[default_theme].background_color
+        self.update_color_preview()
 
         # GRID PDF SETTINGS
         self.page_padding = 50
@@ -245,6 +268,16 @@ class App(ttk.Window):
         self.panel_columns = 3
 
         self.panel_page_map: dict[int, list[Panel]] = {}
+
+    def cc(self):
+        color_chooser = ColorChooserDialog(self, initialcolor=rgb_to_hex(self.font_color))
+        color_chooser.show()
+        self.font_color = color_chooser.result.rgb
+        self.update_color_preview()
+
+    def update_color_preview(self):
+        print(self.font_color)
+        self.font_color_preview_canvas.itemconfig(self.font_color_preview, fill=rgb_to_hex(self.font_color))
 
     def set_icon(self):
         # if macOS use icns, if windows use ico
@@ -259,6 +292,7 @@ class App(ttk.Window):
         selected_theme = self.select_theme.get()
         self.font_color = THEMES[selected_theme].font_color
         self.background_color = THEMES[selected_theme].background_color
+        self.update_color_preview()
 
     def check_queue(self):
         try:
@@ -327,17 +361,15 @@ class App(ttk.Window):
         self.pdf_button.config(state=DISABLED)
         self.stop_pdf_button.config(state=DISABLED)
         self.open_pdf_button.config(state=DISABLED)
-        # self.reset_theme()
+        self.reset_theme()
         self.reset_progress()
         self.entry_name.delete(0, 'end')
         for i in self.tv.get_children():
             self.tv.delete(i)
 
     def reset_theme(self):
-        default_theme = list(THEMES.keys())[0]
-        self.select_theme.set(default_theme)
-        self.font_color = THEMES[default_theme].font_color
-        self.background_color = THEMES[default_theme].background_color
+        self.font_color = THEMES[self.select_theme.get()].font_color
+        self.update_color_preview()
 
     def reset_progress(self):
         self.progress_frame.pack_forget()
@@ -524,6 +556,8 @@ class App(ttk.Window):
         c.drawString(page_width - 50, 50, str(page_number))
 
     def add_filename(self, c, text, offset=50, font_size=32):
+        if not self.include_filename_var.get():
+            return
         font_color = tuple(value / 255 for value in self.font_color)
         c.setFillColorRGB(*font_color)
         c.setFont("Helvetica", font_size)
