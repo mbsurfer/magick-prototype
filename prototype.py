@@ -584,11 +584,12 @@ class App(ttk.Window):
 
         # todo: allow user to adjust these settings at runtime
         header_padding = 30 if add_header else 0
-        footer_padding = 30 if add_footer else 0
+        footer_padding = 45 if style == "grid" else 30 if add_footer else 0
         header_font_size = 24 if style == "grid" else 16
         footer_font_size = 35 if style == "grid" else 16
-        header_text_padding = 10 if add_header else 0
-        footer_text_padding = 15 if add_footer else 0
+        header_text_padding = 5 if add_header else 0
+        # footer_text_padding = 15 if add_footer else 0
+        footer_text_padding = 10 if add_footer else 0
 
         font_color = self.font_color
         background_color = self.background_color
